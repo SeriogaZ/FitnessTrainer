@@ -1,10 +1,20 @@
-@media (max-width: 1400px) {}
+@media (max-width: 1400px) {
+    .slider_section .detail-box {
+        padding-right: 15px;
+    }
+}
 
-@media (max-width: 1120px) {}
+@media (max-width: 1120px) {
+    .hero_area {
+        min-height: auto;
+    }
+    
+    .slider_section .detail-box h1 {
+        font-size: 3.5rem;
+    }
+}
 
 @media (max-width: 992px) {
-
-
     .hero_area {
         height: auto;
     }
@@ -14,7 +24,18 @@
     }
 
     .custom_nav-container {
-        justify-content: center;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .navbar-brand {
+        margin-right: 0;
+        display: flex;
+        align-items: center;
+    }
+    
+    .navbar-brand img {
+        margin-right: 10px;
     }
 
     .custom_nav-container .contact_nav {
@@ -28,89 +49,381 @@
     .custom_nav2 .navbar-nav {
         margin-top: 10px;
     }
+    
+    .custom_nav2 {
+        margin-top: 15px;
+    }
+    
+    /* Show mobile menu button */
+    .navbar-toggler {
+        display: block;
+        margin-left: auto;
+        background-color: #f8bc1a;
+        border: none;
+        padding: 8px 12px;
+    }
+    
+    .navbar-toggler:focus {
+        outline: none;
+    }
+    
+    .navbar-toggler .navbar-toggler-icon {
+        background-image: url(../images/menu.png);
+        background-size: contain;
+        width: 24px;
+        height: 24px;
+    }
+    
+    
+    /* Adjust about section */
+    .about_section .box {
+        width: 100%;
+    }
+    
+    /* Adjust result section */
+    .result_section .detail-box {
+        padding: 30px 15px;
+    }
+    
+    .result_section .detail-box h2 {
+        font-size: 2rem;
+    }
 }
 
 @media (max-width: 768px) {
-
-
+    /* Header adjustments */
+    .header_section {
+        padding: 15px 0;
+    }
+    
+    .navbar-brand {
+        display: flex;
+        align-items: center;
+    }
+    
+    .navbar-brand span {
+        font-size: 18px;
+        margin-left: 10px;
+    }
+    
+    .custom_nav-container {
+        padding: 0;
+    }
+    
+    /* Slider section adjustments */
     .slider_section .detail-box {
         text-align: center;
+        padding: 60px 15px 120px 15px;
     }
 
     .slider_section .detail-box .btn-box {
         justify-content: center;
     }
 
-    .slider_section .detail-box {
-        padding-bottom: 120px;
-    }
-
     .slider_section .carousel-indicators {
-
         justify-content: center;
         left: 0;
         bottom: 55px;
-
     }
-
-    .service_section .service_container .box {
-        flex-basis: 100%;
-        margin: 2% 0;
-    }
-
+    
+    
+    /* Navigation adjustments */
     .custom_nav2 {
         padding: 0;
     }
-
+    
+    .custom_nav2 .navbar-expand-lg .navbar-nav .nav-item .nav-link {
+        padding: 10px 15px;
+    }
+    
+    /* Mobile navigation menu */
+    .navbar-collapse {
+        background-color: #f8bc1a;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+    
+    .navbar-collapse.show {
+        display: block;
+    }
+    
+    .navbar-collapse .navbar-nav {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .navbar-collapse .navbar-nav .nav-item {
+        text-align: center;
+        margin: 5px 0;
+    }
+    
+    .navbar-collapse .navbar-nav .nav-item .nav-link {
+        display: inline-block;
+        padding: 8px 15px;
+        width: 100%;
+    }
+    
+    .navbar-collapse .navbar-nav .nav-item.active .nav-link,
+    .navbar-collapse .navbar-nav .nav-item:hover .nav-link {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+    }
+    
+    /* Us section adjustments */
     .us_section .us_container {
         flex-direction: column;
     }
-
+    
+    .us_section .us_container .box {
+        margin: 15px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 15px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        transition: transform 0.3s;
+    }
+    
+    .us_section .us_container .box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .us_section .us_container .box .img-box {
+        margin-bottom: 15px;
+    }
+    
+    .us_section .us_container .box .detail-box h5 {
+        margin-bottom: 10px;
+    }
+    
+    .us_section .us_container .box .detail-box p {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+    
+    /* Client section adjustments */
     .client_section .box {
         width: 100%;
+        padding: 20px 15px;
+        margin-bottom: 30px;
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     }
-
+    
+    .client_section .box .img-box {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-bottom: 15px;
+        border: 3px solid #f8bc1a;
+    }
+    
+    .client_section .box .detail-box h5 {
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+    
+    .client_section .box .detail-box p {
+        font-style: italic;
+        line-height: 1.6;
+    }
+    
+    .client_section .carousel-indicators {
+        margin-bottom: -15px;
+    }
+    
+    /* Result section adjustments */
+    .result_section .row {
+        flex-direction: column;
+    }
+    
+    .result_section .img-box {
+        margin-bottom: 20px;
+    }
+    
+    .result_section .img-box img {
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
     .result_section .detail-box {
-        padding: 45px 0 90px 0;
+        padding: 30px 15px 45px 15px;
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        margin: 0 15px;
     }
-
+    
+    .result_section .detail-box h2 {
+        margin-bottom: 20px;
+    }
+    
+    .result_section .detail-box h2::before {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .result_section .detail-box p {
+        margin-bottom: 25px;
+    }
+    
+    .result_section .detail-box a {
+        display: inline-block;
+        padding: 12px 30px;
+        font-weight: bold;
+        transition: all 0.3s;
+    }
+    
+    /* Contact section adjustments */
     .contact_section .heading_container {
-        margin-bottom: 0;
+        margin-bottom: 15px;
     }
-
+    
     .contact_form-container {
         margin-bottom: 30px;
     }
-
+    
     .contact_section input {
         width: 100%;
+        padding: 8px 10px;
+        margin: 8px 0;
     }
-
-    .info_section .row>div {
+    
+    .contact_section .row {
+        flex-direction: column;
+    }
+    
+    .contact_section button {
+        margin-top: 15px;
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    /* Map container adjustments */
+    .map_container {
+        margin-top: 30px;
+        height: 300px;
+    }
+    
+    /* Info section adjustments */
+    .info_section .row > div {
         margin-bottom: 25px;
         text-align: center;
     }
-
+    
     .info_section .info_link-box {
         display: flex;
         flex-direction: column;
         align-items: center;
     }
-
+    
     .info_section .info_social {
         justify-content: center;
+    }
+    
+    .info_section .container .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .info_section .container .row > div {
+        flex: 0 0 auto;
+        width: auto;
+        max-width: 100%;
+        margin: 10px 15px;
+    }
+    
+    .info_section .container .row > div img {
+        width: 30px;
+        height: auto;
     }
 }
 
 @media (max-width: 576px) {
+    /* Container padding */
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    /* Slider text adjustments */
     .slider_section .detail-box h1 {
         font-size: 3rem;
     }
+    
+    .slider_section .detail-box p {
+        font-size: 14px;
+    }
+    
+    /* Button adjustments */
+    .slider_section .detail-box .btn-box {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .slider_section .detail-box .btn-box a {
+        margin: 5px 0;
+        width: 200px;
+    }
+    
+    /* About section adjustments */
+    .about_section .box .img-box {
+        width: 100%;
+    }
+    
+    /* Section padding adjustments */
+    .layout_padding {
+        padding: 60px 0;
+    }
+    
+    /* Heading adjustments */
+    .heading_container h2 {
+        font-size: 1.8rem;
+    }
 }
 
-@media (max-width: 480px) {}
+@media (max-width: 480px) {
+    /* Navbar brand adjustments */
+    .navbar-brand img {
+        width: 30px;
+    }
+    
+    .navbar-brand span {
+        font-size: 16px;
+    }
+    
+    
+    /* Us section adjustments */
+    .us_section .us_container .box .detail-box h5 {
+        font-size: 16px;
+    }
+    
+    /* Client section adjustments */
+    .client_section .box .img-box {
+        width: 150px;
+    }
+    
+    /* Contact form adjustments */
+    .contact_section button {
+        padding: 12px 40px;
+    }
+    
+    /* Footer adjustments */
+    .footer_section p {
+        font-size: 14px;
+    }
+}
 
 @media (max-width: 400px) {
+    /* Slider text adjustments */
     .slider_section .detail-box h2 {
         font-size: 1.8rem;
     }
@@ -118,7 +431,8 @@
     .slider_section .detail-box h1 {
         font-size: 2.5rem;
     }
-
+    
+    /* Form adjustments */
     .info_section .info_form form {
         flex-direction: column;
         align-items: center;
@@ -128,15 +442,42 @@
         width: 100%;
         margin-bottom: 10px;
     }
-
-
+    
+    /* Social media adjustments */
+    .info_section .row {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .info_section .row > div {
+        margin: 10px 0;
+    }
 }
 
-@media (max-width: 360px) {}
+@media (max-width: 360px) {
+    /* Navbar adjustments */
+    .navbar-brand span {
+        font-size: 14px;
+    }
+    
+    /* Slider text adjustments */
+    .slider_section .detail-box h2 {
+        font-size: 1.5rem;
+    }
+    
+    .slider_section .detail-box h1 {
+        font-size: 2.2rem;
+    }
+    
+    /* Button adjustments */
+    .slider_section .detail-box .btn-box a {
+        width: 180px;
+        font-size: 14px;
+    }
+}
 
 @media (min-width: 1200px) {
     .container {
         max-width: 1170px;
     }
-
 }

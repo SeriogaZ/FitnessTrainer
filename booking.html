@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>Book a Session - FitnessBookingPortal</title>
+
+  <!-- slider stylesheet -->
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+
+  <!-- fonts style -->
+  <link href="https://fonts.googleapis.com/css?family=Baloo+Chettan|Dosis:400,600,700|Poppins:400,600,700&display=swap"
+    rel="stylesheet" />
+  <!-- Custom styles for this template -->
+  <link href="css/style.css" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="css/responsive.css" rel="stylesheet" />
+  <!-- Calendar styles -->
+  <link href="css/booking.css" rel="stylesheet" />
+</head>
+
+<body class="sub_page">
+  <div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+      <div class="container">
+        <nav class="navbar navbar-expand-lg custom_nav-container">
+          <a class="navbar-brand" href="index.html">
+            <img src="images/logo.png" alt="" />
+            <span>
+              Deivids Auzins
+            </span>
+          </a>
+          <div class="contact_nav" id="">
+            <ul class="navbar-nav ">
+              <li class="nav-item">
+                <a class="nav-link" href="service.html">
+                  <img src="images/location.png" alt="" />
+                  <span>Tornado – Fitnesa klubs</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="service.html">
+                  <img src="images/call.png" alt="" />
+                  <span>Call : +375 26735814</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="service.html">
+                  <img src="images/envelope.png" alt="" />
+                  <span>auzinsdeivids181@gmail.com</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+    </header>
+    <!-- end header section -->
+    <!-- slider section -->
+    <section class=" slider_section position-relative">
+      <div class="container">
+        <div class="custom_nav2">
+          <nav class="navbar navbar-expand-lg custom_nav-container ">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <div class="d-flex  flex-column flex-lg-row align-items-center">
+                <ul class="navbar-nav  ">
+                  <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="about.html">About</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="service.html">Services</a>
+                  </li>
+                  <li class="nav-item active">
+                    <a class="nav-link" href="booking.html">Book a Session <span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="contact.html">Contact Us</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </section>
+    <!-- end slider section -->
+  </div>
+
+  <!-- booking section -->
+  <section class="booking_section layout_padding">
+    <div class="container">
+      <div class="heading_container">
+        <h2>
+          Book a Training Session
+        </h2>
+      </div>
+      <div class="row">
+        <div class="col-md-8 offset-md-2">
+          <div class="booking_container">
+            <div class="calendar_container">
+              <div class="calendar_header">
+                <button id="prev-month" class="month-nav">&lt;</button>
+                <h3 id="month-year">March 2025</h3>
+                <button id="next-month" class="month-nav">&gt;</button>
+              </div>
+              <div class="weekdays">
+                <div>Sun</div>
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+              </div>
+              <div id="calendar-days" class="days">
+                <!-- Calendar days will be generated by JavaScript -->
+              </div>
+            </div>
+            
+            <div id="time-slots" class="time-slots">
+              <h4>Select a time slot</h4>
+              <p class="select-date-prompt">Please select a date first</p>
+              <div id="available-slots" class="slots-container">
+                <!-- Time slots will be generated by JavaScript -->
+              </div>
+            </div>
+            
+            <div id="booking-form" class="booking-form">
+              <h4>Your Information</h4>
+              <form id="session-form">
+                <div class="form-group">
+                  <input type="text" id="name" name="name" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                  <input type="email" id="email" name="email" placeholder="Your Email" required>
+                </div>
+                <div class="form-group">
+                  <input type="tel" id="phone" name="phone" placeholder="Your Phone Number" required>
+                </div>
+                <div class="form-group">
+                  <textarea id="notes" name="notes" placeholder="Any notes or special requests"></textarea>
+                </div>
+                <div class="form-group">
+                  <p id="selected-datetime">No date and time selected</p>
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn-book">Book Session</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- end booking section -->
+
+  <!-- info section -->
+  <section class="info_section layout_padding2-top">
+    <div class="container">
+
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          <a href="">
+            <img src="images/instagram.png" alt=""><h6>
+          </a>
+        </div>
+        <div class="col-md-2 offset-md-1">
+          <div>
+            <a href="">
+              <img src="images/linkedin.png" alt="">
+            </a>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div>
+            <a href="">
+              <img src="images/twitter-logo-button.png" alt="">
+            </a>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div>
+            <a href="">
+              <img src="images/facebook-logo-button.png" alt="">
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- end info section -->
+
+
+  <!-- footer section -->
+  <section class="container-fluid footer_section ">
+    <p>
+      &copy; 2024 All Rights Reserved. Design by Serioga AKA OrangeWeirdo & Artem AKA ToniKing
+    </p>
+  </section>
+  <!-- footer section -->
+
+  <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.js"></script>
+  <script type="text/javascript" src="js/booking.js"></script>
+
+  <script>
+    function openNav() {
+      document.getElementById("myNav").classList.toggle("menu_width");
+      document
+        .querySelector(".custom_menu-btn")
+        .classList.toggle("menu_btn-style");
+    }
+  </script>
+</body>
+
+</html>
