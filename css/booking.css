@@ -129,6 +129,16 @@
   font-style: italic;
 }
 
+.day-off-message {
+  color: #ff6b6b;
+  font-style: italic;
+  margin: 15px 0;
+  padding: 10px;
+  background-color: #fff0f0;
+  border-radius: 5px;
+  text-align: center;
+}
+
 .slots-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
