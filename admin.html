@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>Admin Panel - FitnessBookingPortal</title>
+
+  <!-- slider stylesheet -->
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+
+  <!-- fonts style -->
+  <link href="https://fonts.googleapis.com/css?family=Baloo+Chettan|Dosis:400,600,700|Poppins:400,600,700&display=swap"
+    rel="stylesheet" />
+  <!-- Custom styles for this template -->
+  <link href="css/style.css" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="css/responsive.css" rel="stylesheet" />
+  <!-- Calendar styles -->
+  <link href="css/booking.css" rel="stylesheet" />
+  <!-- Admin styles -->
+  <link href="css/admin.css" rel="stylesheet" />
+</head>
+
+<body class="sub_page">
+  <div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+      <div class="container">
+        <nav class="navbar navbar-expand-lg custom_nav-container">
+          <a class="navbar-brand" href="index.html">
+            <img src="images/logo.png" alt="" />
+            <span>
+              Deivids Auzins
+            </span>
+          </a>
+          <div class="contact_nav" id="">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <img src="images/location.png" alt="" />
+                  <span>Tornado – Fitnesa klubs</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="tel:+37526735814">
+                  <img src="images/call.png" alt="" />
+                  <span>Call: +375 26735814</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="mailto:auzinsdeivids181@gmail.com">
+                  <img src="images/envelope.png" alt="" />
+                  <span>auzinsdeivids181@gmail.com</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+    </header>
+    <!-- end header section -->
+    <!-- slider section -->
+    <section class=" slider_section position-relative">
+      <div class="container">
+        <div class="custom_nav2">
+          <nav class="navbar navbar-expand-lg custom_nav-container ">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <div class="d-flex  flex-column flex-lg-row align-items-center">
+                <ul class="navbar-nav  ">
+                  <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="about.html">About</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="booking.html">Book a Session</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="contact.html">Contact Us</a>
+                  </li>
+                  <li class="nav-item active">
+                    <a class="nav-link" href="admin.html">Admin <span class="sr-only">(current)</span></a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </section>
+    <!-- end slider section -->
+  </div>
+
+  <!-- admin section -->
+  <section class="admin_section layout_padding">
+    <div class="container">
+      <div class="heading_container">
+        <h2>
+          Admin Panel
+        </h2>
+      </div>
+      <div class="row">
+        <div class="col-md-8 offset-md-2">
+          <div class="admin_container">
+            <!-- Login Form -->
+            <div id="login-form" class="admin-login-form">
+              <h4>Login to Admin Panel</h4>
+              <div class="form-group">
+                <input type="password" id="admin-password" placeholder="Enter admin password" class="form-control">
+              </div>
+              <div class="form-group">
+                <button id="admin-login-btn" class="btn-admin">Login</button>
+              </div>
+            </div>
+
+            <!-- Admin Dashboard (hidden by default) -->
+            <div id="admin-dashboard" class="admin-dashboard" style="display: none;">
+              <div class="admin-tabs">
+                <button class="tab-btn active" data-tab="calendar">Calendar View</button>
+                <button class="tab-btn" data-tab="bookings">All Bookings</button>
+                <button class="tab-btn" data-tab="settings">Settings</button>
+              </div>
+
+              <!-- Calendar Tab -->
+              <div id="calendar-tab" class="tab-content active">
+                <h4>Manage Bookings Calendar</h4>
+                <p>Select dates and time slots to mark as booked or available.</p>
+                
+                <div class="calendar_container">
+                  <div class="calendar_header">
+                    <button id="prev-month" class="month-nav">&lt;</button>
+                    <h3 id="month-year">March 2025</h3>
+                    <button id="next-month" class="month-nav">&gt;</button>
+                  </div>
+                  <div class="weekdays">
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                  </div>
+                  <div id="calendar-days" class="days">
+                    <!-- Calendar days will be generated by JavaScript -->
+                  </div>
+                </div>
+                
+                <div id="time-slots" class="time-slots">
+                  <h4>Time Slots for <span id="selected-date-display">No date selected</span></h4>
+                  <div id="available-slots" class="slots-container">
+                    <!-- Time slots will be generated by JavaScript -->
+                  </div>
+                </div>
+                
+                <div class="admin-actions">
+                  <button id="mark-booked-btn" class="btn-admin">Mark Selected as Booked</button>
+                  <button id="mark-available-btn" class="btn-admin btn-secondary">Mark Selected as Available</button>
+                </div>
+              </div>
+
+              <!-- Bookings Tab -->
+              <div id="bookings-tab" class="tab-content">
+                <h4>All Bookings</h4>
+                <div class="bookings-filter">
+                  <select id="filter-period" class="form-control">
+                    <option value="all">All Bookings</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                  </select>
+                  <button id="refresh-bookings" class="btn-admin btn-small">Refresh</button>
+                </div>
+                <div id="bookings-list" class="bookings-list">
+                  <!-- Bookings will be listed here -->
+                  <p class="no-bookings">No bookings found.</p>
+                </div>
+              </div>
+
+              <!-- Settings Tab -->
+              <div id="settings-tab" class="tab-content">
+                <h4>Settings</h4>
+                <div class="settings-form">
+                  <div class="form-group">
+                    <label>Working Hours</label>
+                    <div class="hours-container">
+                      <div class="hours-row">
+                        <label>Start Time:</label>
+                        <select id="start-hour" class="form-control">
+                          <option value="8">8:00 AM</option>
+                          <option value="9">9:00 AM</option>
+                          <option value="10">10:00 AM</option>
+                        </select>
+                      </div>
+                      <div class="hours-row">
+                        <label>End Time:</label>
+                        <select id="end-hour" class="form-control">
+                          <option value="17">5:00 PM</option>
+                          <option value="18">6:00 PM</option>
+                          <option value="19">7:00 PM</option>
+                          <option value="20">8:00 PM</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Session Duration (minutes)</label>
+                    <select id="session-duration" class="form-control">
+                      <option value="60">60 minutes</option>
+                      <option value="45">45 minutes</option>
+                      <option value="30">30 minutes</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Days Off</label>
+                    <div class="days-off-container">
+                      <div class="day-checkbox">
+                        <input type="checkbox" id="sunday-off" value="0">
+                        <label for="sunday-off">Sunday</label>
+                      </div>
+                      <div class="day-checkbox">
+                        <input type="checkbox" id="monday-off" value="1">
+                        <label for="monday-off">Monday</label>
+                      </div>
+                      <div class="day-checkbox">
+                        <input type="checkbox" id="tuesday-off" value="2">
+                        <label for="tuesday-off">Tuesday</label>
+                      </div>
+                      <div class="day-checkbox">
+                        <input type="checkbox" id="wednesday-off" value="3">
+                        <label for="wednesday-off">Wednesday</label>
+                      </div>
+                      <div class="day-checkbox">
+                        <input type="checkbox" id="thursday-off" value="4">
+                        <label for="thursday-off">Thursday</label>
+                      </div>
+                      <div class="day-checkbox">
+                        <input type="checkbox" id="friday-off" value="5">
+                        <label for="friday-off">Friday</label>
+                      </div>
+                      <div class="day-checkbox">
+                        <input type="checkbox" id="saturday-off" value="6">
+                        <label for="saturday-off">Saturday</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <button id="save-settings" class="btn-admin">Save Settings</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- end admin section -->
+
+  <!-- footer section -->
+  <section class="container-fluid footer_section ">
+    <p>
+      &copy; 2024 All Rights Reserved. Design by Serioga AKA OrangeWeirdo & Artem AKA ToniKing
+    </p>
+  </section>
+  <!-- footer section -->
+
+  <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.js"></script>
+  <script type="text/javascript" src="js/admin.js"></script>
+
+  <script>
+    function openNav() {
+      document.getElementById("myNav").classList.toggle("menu_width");
+      document
+        .querySelector(".custom_menu-btn")
+        .classList.toggle("menu_btn-style");
+    }
+  </script>
+</body>
+
+</html>

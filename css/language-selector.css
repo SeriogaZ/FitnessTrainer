@@ -1,0 +1,63 @@
+/* Styles for the language selector */
+
+.language-selector-container {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+  position: relative;
+}
+
+.language-label {
+  margin-right: 8px;
+  color: #333;
+  font-size: 14px;
+}
+
+.language-selector {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.language-selector:hover {
+  border-color: #f8bc1a;
+}
+
+.language-selector:focus {
+  border-color: #f8bc1a;
+  box-shadow: 0 0 0 2px rgba(248, 188, 26, 0.2);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .language-selector-container {
+    margin-left: 10px;
+  }
+  
+  .language-label {
+    display: none; /* Hide label on small screens */
+  }
+  
+  .language-selector {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 576px) {
+  .language-selector-container {
+    margin-left: 5px;
+  }
+  
+  .language-selector {
+    padding: 3px 6px;
+    font-size: 11px;
+  }
+}
