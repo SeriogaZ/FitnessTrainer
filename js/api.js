@@ -173,3 +173,6 @@ const API = {
   Admin: AdminAPI,
   Settings: SettingsAPI
 };
+
+// Make API available globally for browser environment
+window.API = API;

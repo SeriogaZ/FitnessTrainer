@@ -17,34 +17,52 @@ document.addEventListener('DOMContentLoaded', function() {
   let currentYear = currentDate.getFullYear();
   let selectedDate = null;
   let selectedTimeSlot = null;
-  
-  // Time slots (24-hour format)
-  const timeSlots = [
-    '08:00', '09:00', '10:00', '11:00', '12:00', 
-    '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'
-  ];
+  let settings = null;
   
   // Initialize the booking system
   init();
   
-  function init() {
-    // Initialize calendar
-    generateCalendar(currentMonth, currentYear);
-    
-    // Event listeners
-    prevMonthBtn.addEventListener('click', goToPrevMonth);
-    nextMonthBtn.addEventListener('click', goToNextMonth);
-    bookingForm.addEventListener('submit', handleBookingSubmit);
-    
-    // Check if admin mode is enabled via URL parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('admin') === 'true') {
-      createAdminPanel();
+  async function init() {
+    try {
+      // Get settings from API
+      const response = await API.Settings.getSettings();
+      settings = response.data;
+      
+      // Initialize calendar
+      generateCalendar(currentMonth, currentYear);
+      
+      // Event listeners
+      prevMonthBtn.addEventListener('click', goToPrevMonth);
+      nextMonthBtn.addEventListener('click', goToNextMonth);
+      bookingForm.addEventListener('submit', handleBookingSubmit);
+      
+      // Check if admin mode is enabled via URL parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('admin') === 'true') {
+        createAdminPanel();
+      }
+    } catch (error) {
+      console.error('Error initializing booking system:', error);
+      // Fallback to default settings if API call fails
+      settings = {
+        startHour: 8,
+        endHour: 19,
+        sessionDuration: 60,
+        daysOff: ['0'] // Sunday off by default
+      };
+      
+      // Initialize calendar with default settings
+      generateCalendar(currentMonth, currentYear);
+      
+      // Event listeners
+      prevMonthBtn.addEventListener('click', goToPrevMonth);
+      nextMonthBtn.addEventListener('click', goToNextMonth);
+      bookingForm.addEventListener('submit', handleBookingSubmit);
     }
   }
   
   // Calendar generation
-  function generateCalendar(month, year) {
+  async function generateCalendar(month, year) {
     // Clear previous calendar
     calendarDays.innerHTML = '';
     
@@ -66,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Create cells for each day of the month
     const today = new Date();
-    const bookings = getBookings();
     
     for (let day = 1; day <= daysInMonth; day++) {
       const dayElement = document.createElement('div');
@@ -85,12 +102,34 @@ document.addEventListener('DOMContentLoaded', function() {
       if (checkDate < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
         dayElement.classList.add('disabled');
       } else {
-        // Check if all slots for this day are booked
-        const dayFullyBooked = isDateFullyBooked(dateString, bookings);
-        if (dayFullyBooked) {
-          dayElement.classList.add('booked');
-        } else {
-          // Add click event for selectable days
+        try {
+          // Check if this day is a day off
+          const dayOfWeek = checkDate.getDay().toString();
+          if (settings && settings.daysOff && settings.daysOff.includes(dayOfWeek)) {
+            dayElement.classList.add('disabled');
+            dayElement.title = 'Day off';
+          } else {
+            // Check if all slots for this day are booked
+            const response = await API.Booking.getBookingsByDate(dateString);
+            const bookings = response.data;
+            
+            // Count booked slots
+            const bookedSlotsCount = Object.keys(bookings).length;
+            const totalSlots = settings ? (settings.endHour - settings.startHour) : 11;
+            
+            if (bookedSlotsCount >= totalSlots) {
+              dayElement.classList.add('booked');
+              dayElement.title = 'Fully booked';
+            } else {
+              // Add click event for selectable days
+              dayElement.addEventListener('click', function() {
+                selectDay(day, month, year);
+              });
+            }
+          }
+        } catch (error) {
+          console.error(`Error checking availability for ${dateString}:`, error);
+          // Still make the day selectable if there's an error
           dayElement.addEventListener('click', function() {
             selectDay(day, month, year);
           });
@@ -99,15 +138,6 @@ document.addEventListener('DOMContentLoaded', function() {
       
       calendarDays.appendChild(dayElement);
     }
-  }
-  
-  // Check if all time slots for a date are booked
-  function isDateFullyBooked(dateString, bookings) {
-    if (!bookings[dateString]) return false;
-    
-    // Count booked slots for this date
-    const bookedSlotsCount = Object.keys(bookings[dateString]).length;
-    return bookedSlotsCount >= timeSlots.length;
   }
   
   // Handle day selection
@@ -131,35 +161,60 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // Generate time slots for selected date
-  function generateTimeSlots(date) {
+  async function generateTimeSlots(date) {
     // Clear previous time slots
     availableSlots.innerHTML = '';
     selectDatePrompt.style.display = 'none';
     
-    // Get bookings for this date
-    const bookings = getBookings();
-    const dateString = formatDate(date);
-    const bookedSlots = bookings[dateString] || {};
-    
-    // Create time slot elements
-    timeSlots.forEach(time => {
-      const timeSlotElement = document.createElement('div');
-      timeSlotElement.classList.add('time-slot');
-      timeSlotElement.textContent = formatTime(time);
+    try {
+      // Format date for API
+      const dateString = formatDate(date);
       
-      // Check if this slot is booked
-      if (bookedSlots[time]) {
-        timeSlotElement.classList.add('booked');
-        timeSlotElement.title = 'This slot is already booked';
-      } else {
-        // Add click event for available slots
-        timeSlotElement.addEventListener('click', function() {
-          selectTimeSlot(time, timeSlotElement);
-        });
+      // Check if this day is a day off
+      const dayOfWeek = date.getDay().toString();
+      if (settings && settings.daysOff && settings.daysOff.includes(dayOfWeek)) {
+        const dayOffMessage = document.createElement('p');
+        dayOffMessage.textContent = 'This day is not available for bookings.';
+        dayOffMessage.classList.add('day-off-message');
+        availableSlots.appendChild(dayOffMessage);
+        return;
       }
       
-      availableSlots.appendChild(timeSlotElement);
-    });
+      // Get bookings for this date from API
+      const response = await API.Booking.getBookingsByDate(dateString);
+      const bookings = response.data;
+      
+      // Determine available time slots based on settings
+      const startHour = settings ? settings.startHour : 8;
+      const endHour = settings ? settings.endHour : 19;
+      
+      // Create time slot elements
+      for (let hour = startHour; hour < endHour; hour++) {
+        const time = `${hour}:00`;
+        const timeSlotElement = document.createElement('div');
+        timeSlotElement.classList.add('time-slot');
+        timeSlotElement.textContent = formatTime(time);
+        
+        // Check if this slot is booked
+        if (bookings[time]) {
+          timeSlotElement.classList.add('booked');
+          timeSlotElement.title = 'This slot is already booked';
+        } else {
+          // Add click event for available slots
+          timeSlotElement.addEventListener('click', function() {
+            selectTimeSlot(time, timeSlotElement);
+          });
+        }
+        
+        availableSlots.appendChild(timeSlotElement);
+      }
+    } catch (error) {
+      console.error(`Error generating time slots for ${formatDate(date)}:`, error);
+      const errorMessage = document.createElement('p');
+      errorMessage.textContent = 'Failed to load time slots. Please try again later.';
+      errorMessage.style.color = 'red';
+      availableSlots.appendChild(errorMessage);
+    }
   }
   
   // Handle time slot selection
@@ -192,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // Handle booking form submission
-  function handleBookingSubmit(e) {
+  async function handleBookingSubmit(e) {
     e.preventDefault();
     
     // Validate selection
@@ -214,50 +269,22 @@ document.addEventListener('DOMContentLoaded', function() {
       phone,
       notes,
       date: formatDate(selectedDate),
-      time: selectedTimeSlot,
-      timestamp: new Date().toISOString()
+      time: selectedTimeSlot
     };
     
-    // Save booking
-    saveBooking(booking);
-    
-    // Send email notification (in a real app, this would be done server-side)
-    sendEmailNotification(booking);
-    
-    // Show success message
-    alert('Your booking request has been submitted! You will receive a confirmation shortly.');
-    
-    // Reset form and selections
-    resetForm();
-  }
-  
-  // Save booking to localStorage
-  function saveBooking(booking) {
-    const bookings = getBookings();
-    
-    // Initialize date entry if it doesn't exist
-    if (!bookings[booking.date]) {
-      bookings[booking.date] = {};
+    try {
+      // Submit booking to API
+      const response = await API.Booking.createBooking(booking);
+      
+      // Show success message
+      alert('Your booking request has been submitted! You will receive a confirmation shortly.');
+      
+      // Reset form and selections
+      resetForm();
+    } catch (error) {
+      console.error('Error creating booking:', error);
+      alert(`Booking failed: ${error.message || 'Please try again later.'}`);
     }
-    
-    // Add booking to the date's time slot
-    bookings[booking.date][booking.time] = booking;
-    
-    // Save to localStorage
-    localStorage.setItem('bookings', JSON.stringify(bookings));
-  }
-  
-  // Get bookings from localStorage
-  function getBookings() {
-    const bookingsJSON = localStorage.getItem('bookings');
-    return bookingsJSON ? JSON.parse(bookingsJSON) : {};
-  }
-  
-  // Send email notification (simulated)
-  function sendEmailNotification(booking) {
-    console.log('Email notification would be sent with:', booking);
-    // In a real application, this would make an API call to a server
-    // that would send an email to the trainer
   }
   
   // Reset form and selections after booking
@@ -331,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <input type="password" id="admin-password" placeholder="Enter admin password">
         <button id="admin-login">Login</button>
       </div>
-      <div class="admin-actions" id="admin-actions">
+      <div class="admin-actions" id="admin-actions" style="display: none;">
         <h5>Mark Slots as Booked</h5>
         <p>Select a date and time slot above, then click "Mark as Booked" to block that slot.</p>
         <button id="mark-booked" class="btn-book">Mark Selected Slot as Booked</button>
@@ -342,73 +369,95 @@ document.addEventListener('DOMContentLoaded', function() {
     bookingContainer.appendChild(adminPanel);
     
     // Add event listeners for admin functionality
-    document.getElementById('admin-login').addEventListener('click', function() {
+    document.getElementById('admin-login').addEventListener('click', async function() {
       const password = document.getElementById('admin-password').value;
-      // Simple password check (in a real app, this would be more secure)
-      if (password === 'admin123') {
+      
+      try {
+        // Use API for admin login
+        await API.Admin.login('admin', password);
         document.getElementById('admin-actions').style.display = 'block';
-      } else {
-        alert('Incorrect password');
+      } catch (error) {
+        alert('Incorrect password or login failed');
       }
     });
     
-    document.getElementById('mark-booked').addEventListener('click', function() {
+    document.getElementById('mark-booked').addEventListener('click', async function() {
       if (!selectedDate || !selectedTimeSlot) {
         alert('Please select a date and time slot to mark as booked.');
         return;
       }
       
-      // Create a "blocked" booking
-      const booking = {
-        name: 'BLOCKED',
-        email: 'admin@example.com',
-        phone: '0000000000',
-        notes: 'This slot has been manually blocked by the admin.',
-        date: formatDate(selectedDate),
-        time: selectedTimeSlot,
-        timestamp: new Date().toISOString(),
-        isBlocked: true
-      };
-      
-      // Save the blocked booking
-      saveBooking(booking);
-      
-      // Refresh the calendar and time slots
-      generateCalendar(currentMonth, currentYear);
-      if (selectedDate) {
-        generateTimeSlots(selectedDate);
+      try {
+        // Use API to block time slot
+        await API.Admin.blockTimeSlot(formatDate(selectedDate), selectedTimeSlot);
+        
+        // Refresh the calendar and time slots
+        generateCalendar(currentMonth, currentYear);
+        if (selectedDate) {
+          generateTimeSlots(selectedDate);
+        }
+        
+        alert('The selected slot has been marked as booked.');
+      } catch (error) {
+        console.error('Error blocking time slot:', error);
+        alert(`Failed to block time slot: ${error.message || 'Please try again later.'}`);
       }
-      
-      alert('The selected slot has been marked as booked.');
     });
     
-    document.getElementById('view-bookings').addEventListener('click', function() {
-      const bookings = getBookings();
-      let bookingsList = 'All Bookings:\n\n';
-      
-      // Check if there are any bookings
-      if (Object.keys(bookings).length === 0) {
-        alert('No bookings found.');
-        return;
-      }
-      
-      // Format bookings for display
-      for (const date in bookings) {
-        for (const time in bookings[date]) {
-          const booking = bookings[date][time];
-          const formattedDate = new Date(date).toLocaleDateString();
-          bookingsList += `${formattedDate} at ${formatTime(time)}\n`;
-          bookingsList += `Name: ${booking.name}\n`;
-          bookingsList += `Contact: ${booking.email} / ${booking.phone}\n`;
-          if (booking.notes) {
-            bookingsList += `Notes: ${booking.notes}\n`;
-          }
-          bookingsList += '\n';
+    document.getElementById('view-bookings').addEventListener('click', async function() {
+      try {
+        // Get all bookings from API
+        const response = await API.Admin.getAllBookings();
+        const bookings = response.data;
+        
+        if (bookings.length === 0) {
+          alert('No bookings found.');
+          return;
         }
+        
+        // Format bookings for display
+        let bookingsList = 'All Bookings:\n\n';
+        
+        // Group bookings by date
+        const bookingsByDate = {};
+        bookings.forEach(booking => {
+          if (!bookingsByDate[booking.date]) {
+            bookingsByDate[booking.date] = [];
+          }
+          bookingsByDate[booking.date].push(booking);
+        });
+        
+        // Sort dates
+        const sortedDates = Object.keys(bookingsByDate).sort();
+        
+        // Format bookings by date
+        sortedDates.forEach(date => {
+          const formattedDate = new Date(date).toLocaleDateString();
+          bookingsList += `=== ${formattedDate} ===\n`;
+          
+          // Sort bookings by time
+          const sortedBookings = bookingsByDate[date].sort((a, b) => {
+            return a.time.localeCompare(b.time);
+          });
+          
+          // Add each booking
+          sortedBookings.forEach(booking => {
+            bookingsList += `${formatTime(booking.time)}\n`;
+            bookingsList += `Name: ${booking.name}\n`;
+            bookingsList += `Contact: ${booking.email} / ${booking.phone}\n`;
+            if (booking.notes) {
+              bookingsList += `Notes: ${booking.notes}\n`;
+            }
+            bookingsList += '\n';
+          });
+        });
+        
+        // Display bookings in an alert (in a real app, this would be a proper UI)
+        alert(bookingsList);
+      } catch (error) {
+        console.error('Error getting bookings:', error);
+        alert(`Failed to get bookings: ${error.message || 'Please try again later.'}`);
       }
-      
-      // Display bookings in an alert (in a real app, this would be a proper UI)
-      alert(bookingsList);
     });
   }
   
@@ -428,6 +477,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const hour = parseInt(hours, 10);
     const ampm = hour >= 12 ? 'PM' : 'AM';
     const hour12 = hour % 12 || 12;
-    return `${hour12}:${minutes} ${ampm}`;
+    return `${hour12}:${minutes || '00'} ${ampm}`;
   }
 });
