@@ -167,11 +167,6 @@
         <h2>Complete Your Booking</h2>
         <p class="subtitle">Secure payment - Your information is protected</p>
       </div>
-      <div class="text-center mb-4">
-        <button class="btn-back-to-calendar" onclick="goBackToCalendar()">
-          ← Back to Calendar
-        </button>
-      </div>
       
       <div class="payment_container">
         <div class="row">
@@ -198,6 +193,11 @@
                 <strong>Total:</strong>
                 <span id="summary-total">€50.00</span>
               </div>
+              <div class="summary-actions">
+                <button class="btn-back-to-calendar" onclick="goBackToCalendar()">
+                  ← Back to Calendar
+                </button>
+              </div>
             </div>
           </div>
           
@@ -218,14 +218,6 @@
                 <button class="btn-payment google-pay">
                   <span class="payment-icon">G</span>
                   <span>Pay with Google Pay</span>
-                </button>
-              </div>
-              
-              <!-- PayPal -->
-              <div class="payment-method">
-                <button class="btn-payment paypal" id="paypal-button">
-                  <span class="payment-icon">P</span>
-                  <span>Pay with PayPal</span>
                 </button>
               </div>
               
@@ -408,8 +400,6 @@
   <script type="text/javascript" src="js/bootstrap.js"></script>
   <!-- Stripe for Credit Cards, Apple Pay, Google Pay -->
   <script src="https://js.stripe.com/v3/"></script>
-  <!-- PayPal SDK - Replace YOUR_PAYPAL_CLIENT_ID with your actual PayPal Client ID -->
-  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=EUR&intent=capture"></script>
   <script type="text/javascript" src="js/api.js"></script>
   <script type="text/javascript" src="js/booking.js"></script>
   <script type="text/javascript" src="js/payment.js"></script>

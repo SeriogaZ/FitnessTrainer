@@ -98,6 +98,13 @@
   font-size: 1.3rem;
 }
 
+.summary-actions {
+  margin-top: 30px;
+  padding-top: 25px;
+  border-top: 1px solid #e0e0e0;
+  text-align: center;
+}
+
 /* Payment Options */
 .payment-options h4 {
   margin-bottom: 25px;
@@ -155,16 +162,6 @@
   border-color: #357ae8;
 }
 
-.btn-payment.paypal {
-  background-color: #0070ba;
-  color: #fff;
-  border-color: #0070ba;
-}
-
-.btn-payment.paypal:hover {
-  background-color: #005ea6;
-  border-color: #005ea6;
-}
 
 .payment-icon {
   font-size: 20px;

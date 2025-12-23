@@ -1,5 +1,5 @@
 // Payment System Integration
-// Supports: Stripe (Credit Cards, Apple Pay, Google Pay), PayPal
+// Supports: Stripe (Credit Cards, Apple Pay, Google Pay)
 
 let stripe = null;
 let cardElement = null;
@@ -12,9 +12,9 @@ let currentBooking = null;
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize Stripe (replace with your publishable key)
   // Get from environment or use test key
-  const stripeKey = window.STRIPE_PUBLISHABLE_KEY || 'pk_test_51...'; // You'll need to add your Stripe publishable key
+  const stripeKey = window.STRIPE_PUBLISHABLE_KEY || 'pk_test_51ShXbXI83wpzjW6mMpQWj4SrEfKo85NLwg8woPzVTR7t0s91oCalJEsYf6iZSSgCahPn2VFs6uyUQs0gKgcTvYxU00oWM0SYYz'; // You'll need to add your Stripe publishable key
   
-  if (typeof Stripe !== 'undefined' && stripeKey && stripeKey !== 'pk_test_51...') {
+  if (typeof Stripe !== 'undefined' && stripeKey && stripeKey !== 'pk_test_51ShXbXI83wpzjW6mMpQWj4SrEfKo85NLwg8woPzVTR7t0s91oCalJEsYf6iZSSgCahPn2VFs6uyUQs0gKgcTvYxU00oWM0SYYz') {
     stripe = Stripe(stripeKey);
     elements = stripe.elements();
     
@@ -101,8 +101,6 @@ function showPaymentSection(booking) {
   // Update summary
   updateBookingSummary(booking);
   
-  // Initialize PayPal
-  initPayPal();
 }
 
 function updateBookingSummary(booking) {
@@ -129,48 +127,13 @@ function updateBookingSummary(booking) {
   if (emailEl) emailEl.textContent = booking.email;
 }
 
-// Initialize PayPal
-function initPayPal() {
-  if (typeof paypal === 'undefined') {
-    console.warn('PayPal SDK not loaded');
-    return;
-  }
-
-  paypal.Buttons({
-    createOrder: function(data, actions) {
-      return actions.order.create({
-        purchase_units: [{
-          amount: {
-            value: '50.00',
-            currency_code: 'EUR'
-          },
-          description: `Fitness Session - ${currentBooking.date} at ${currentBooking.time}`
-        }]
-      });
-    },
-    onApprove: function(data, actions) {
-      return actions.order.capture().then(function(details) {
-        completeBooking('paypal', details.id);
-      });
-    },
-    onError: function(err) {
-      showPaymentMessage('PayPal payment failed. Please try again.', 'error');
-    },
-    style: {
-      layout: 'vertical',
-      color: 'blue',
-      shape: 'rect',
-      label: 'paypal'
-    }
-  }).render('#paypal-button');
-}
 
 // Handle card payment
 async function handleCardPayment(e) {
   e.preventDefault();
   
   if (!stripe || !cardElement) {
-    showPaymentMessage('Card payment not available. Please use PayPal or contact us.', 'error');
+    showPaymentMessage('Card payment not available. Please contact us.', 'error');
     return;
   }
 
