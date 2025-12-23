@@ -111,3 +111,4 @@ The schema creates two tables:
 - Supabase Discord: https://discord.supabase.com
 - Check server console for detailed error messages
 
+

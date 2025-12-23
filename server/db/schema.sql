@@ -48,3 +48,4 @@ CREATE POLICY "Allow public read access to settings" ON settings
 -- Note: For admin operations (update/delete), you'll need to add authentication policies
 -- For now, these basic policies allow the booking system to work
 
+
