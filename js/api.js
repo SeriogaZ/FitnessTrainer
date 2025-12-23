@@ -77,75 +77,6 @@ const BookingAPI = {
 };
 
 /**
- * Admin API functions
- */
-const AdminAPI = {
-  /**
-   * Login as admin
-   * @param {string} username - Admin username
-   * @param {string} password - Admin password
-   * @returns {Promise<Object>} - Auth token and admin data
-   */
-  login: async (username, password) => {
-    const data = await fetchAPI('/admin/login', {
-      method: 'POST',
-      body: JSON.stringify({ username, password })
-    });
-    
-    // Save auth token to localStorage
-    if (data.token) {
-      localStorage.setItem('authToken', data.token);
-    }
-    
-    return data;
-  },
-  
-  /**
-   * Logout admin
-   * @returns {Promise<Object>} - Logout result
-   */
-  logout: async () => {
-    const data = await fetchAPI('/admin/logout');
-    localStorage.removeItem('authToken');
-    return data;
-  },
-  
-  /**
-   * Get all bookings (admin only)
-   * @returns {Promise<Object>} - All bookings
-   */
-  getAllBookings: async () => {
-    return fetchAPI('/bookings');
-  },
-  
-  /**
-   * Block a time slot
-   * @param {string} date - Date in YYYY-MM-DD format
-   * @param {string} time - Time in HH:MM format
-   * @returns {Promise<Object>} - Blocked slot data
-   */
-  blockTimeSlot: async (date, time) => {
-    return fetchAPI('/admin/block-slot', {
-      method: 'POST',
-      body: JSON.stringify({ date, time })
-    });
-  },
-  
-  /**
-   * Unblock a time slot
-   * @param {string} date - Date in YYYY-MM-DD format
-   * @param {string} time - Time in HH:MM format
-   * @returns {Promise<Object>} - Unblock result
-   */
-  unblockTimeSlot: async (date, time) => {
-    return fetchAPI('/admin/unblock-slot', {
-      method: 'POST',
-      body: JSON.stringify({ date, time })
-    });
-  }
-};
-
-/**
  * Settings API functions
  */
 const SettingsAPI = {
@@ -157,22 +88,10 @@ const SettingsAPI = {
     return fetchAPI('/settings');
   },
   
-  /**
-   * Update settings (admin only)
-   * @param {Object} settingsData - New settings
-   * @returns {Promise<Object>} - Updated settings
-   */
-  updateSettings: async (settingsData) => {
-    return fetchAPI('/settings', {
-      method: 'PUT',
-      body: JSON.stringify(settingsData)
-    });
-  }
 };
 
 // Export API functions
 const API = {
   Booking: BookingAPI,
-  Admin: AdminAPI,
   Settings: SettingsAPI
 };

@@ -40,20 +40,26 @@ document.addEventListener('DOMContentLoaded', function() {
         };
       }
     } catch (error) {
-      console.error('Error loading settings:', error);
-      // Use default settings
+      console.warn('Could not load settings from API, using defaults:', error);
+      // Use default settings - calendar will still work
     }
     
     // Initialize step indicator
     updateStepIndicator(1);
     
-    // Initialize calendar
-    generateCalendar(currentMonth, currentYear);
+    // Initialize calendar (works even without API)
+    await generateCalendar(currentMonth, currentYear);
     
     // Event listeners
-    prevMonthBtn.addEventListener('click', goToPrevMonth);
-    nextMonthBtn.addEventListener('click', goToNextMonth);
-    bookingForm.addEventListener('submit', handleBookingSubmit);
+    if (prevMonthBtn) {
+      prevMonthBtn.addEventListener('click', goToPrevMonth);
+    }
+    if (nextMonthBtn) {
+      nextMonthBtn.addEventListener('click', goToNextMonth);
+    }
+    if (bookingForm) {
+      bookingForm.addEventListener('submit', handleBookingSubmit);
+    }
   }
   
   // Calendar generation
@@ -81,6 +87,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
+    // Store day elements for later API checking
+    const dayElements = [];
+    
     for (let day = 1; day <= daysInMonth; day++) {
       const dayElement = document.createElement('div');
       dayElement.classList.add('day');
@@ -89,6 +98,12 @@ document.addEventListener('DOMContentLoaded', function() {
       const dateString = formatDate(new Date(year, month, day));
       const checkDate = new Date(year, month, day);
       checkDate.setHours(0, 0, 0, 0);
+      
+      // Store date info in element
+      dayElement.dataset.date = dateString;
+      dayElement.dataset.day = day;
+      dayElement.dataset.month = month;
+      dayElement.dataset.year = year;
       
       // Check if this day is today
       if (checkDate.getTime() === today.getTime()) {
@@ -104,58 +119,80 @@ document.addEventListener('DOMContentLoaded', function() {
         if (settings.daysOff.includes(dayOfWeek)) {
           dayElement.classList.add('disabled');
         } else {
-          // Check if all slots for this day are booked
-          try {
-            const bookingsData = await API.Booking.getBookingsByDate(dateString);
-            if (bookingsData.success) {
-              const bookedSlots = Object.keys(bookingsData.data || {}).length;
-              const totalSlots = settings.endHour - settings.startHour;
-              
-              if (bookedSlots >= totalSlots) {
-                dayElement.classList.add('booked');
-              } else {
-                dayElement.addEventListener('click', function() {
-                  selectDay(day, month, year);
-                });
-              }
-            } else {
-              // If API call fails, still allow selection
-              dayElement.addEventListener('click', function() {
-                selectDay(day, month, year);
-              });
-            }
-          } catch (error) {
-            console.error('Error checking bookings:', error);
-            // Allow selection even if API fails
-            dayElement.addEventListener('click', function() {
-              selectDay(day, month, year);
-            });
-          }
+          // Make clickable by default - we'll check bookings on click
+          dayElement.addEventListener('click', function() {
+            selectDay(day, month, year);
+          });
+          dayElements.push({ element: dayElement, dateString: dateString });
         }
       }
       
       calendarDays.appendChild(dayElement);
     }
+    
+    // Optionally check bookings for visible days (non-blocking)
+    // This runs in background and updates the calendar
+    checkBookingsForMonth(dayElements);
+  }
+  
+  // Check bookings for multiple days (optimized)
+  async function checkBookingsForMonth(dayElements) {
+    // Check if API is available
+    if (typeof API === 'undefined' || !API.Booking) {
+      console.log('API not available, calendar will work in offline mode');
+      return;
+    }
+    
+    // Only check a few days at a time to avoid overwhelming the API
+    const daysToCheck = dayElements.slice(0, 10); // Check first 10 days
+    
+    for (const { element, dateString } of daysToCheck) {
+      try {
+        const bookingsData = await API.Booking.getBookingsByDate(dateString);
+        if (bookingsData && bookingsData.success && bookingsData.data) {
+          const bookedSlots = Object.keys(bookingsData.data).length;
+          const totalSlots = settings.endHour - settings.startHour;
+          
+          if (bookedSlots >= totalSlots) {
+            element.classList.add('booked');
+            // Remove click handler if fully booked
+            const newElement = element.cloneNode(true);
+            element.parentNode.replaceChild(newElement, element);
+          }
+        }
+      } catch (error) {
+        // Silently fail - allow booking anyway
+        // Calendar will work even if API is down
+      }
+    }
   }
   
   // Handle day selection
   async function selectDay(day, month, year) {
-    // Remove selected class from previously selected day
-    const previousSelected = document.querySelector('.day.selected');
-    if (previousSelected) {
-      previousSelected.classList.remove('selected');
-    }
+    // Find the clicked day element
+    const dayElement = Array.from(document.querySelectorAll('.day:not(.empty)')).find(el => {
+      const elDay = parseInt(el.textContent);
+      const elMonth = parseInt(el.dataset.month);
+      const elYear = parseInt(el.dataset.year);
+      return elDay === day && elMonth === month && elYear === year;
+    });
     
-    // Add selected class to clicked day
-    const dayElements = document.querySelectorAll('.day:not(.empty)');
-    const dayIndex = Array.from(dayElements).findIndex(el => 
-      parseInt(el.textContent) === day && 
-      !el.classList.contains('disabled') && 
-      !el.classList.contains('booked')
-    );
-    
-    if (dayIndex !== -1) {
-      dayElements[dayIndex].classList.add('selected');
+    // If element not found by dataset, try by text content
+    if (!dayElement) {
+      const dayElements = document.querySelectorAll('.day:not(.empty):not(.disabled):not(.booked)');
+      const found = Array.from(dayElements).find(el => parseInt(el.textContent) === day);
+      if (found) {
+        found.classList.add('selected');
+      }
+    } else {
+      // Remove selected class from previously selected day
+      const previousSelected = document.querySelector('.day.selected');
+      if (previousSelected) {
+        previousSelected.classList.remove('selected');
+      }
+      
+      // Add selected class to clicked day
+      dayElement.classList.add('selected');
     }
     
     // Update selected date
@@ -172,21 +209,27 @@ document.addEventListener('DOMContentLoaded', function() {
   // Generate time slots for selected date
   async function generateTimeSlots(date) {
     // Clear previous time slots
-    availableSlots.innerHTML = '';
-    selectDatePrompt.style.display = 'none';
+    if (availableSlots) {
+      availableSlots.innerHTML = '';
+    }
+    if (selectDatePrompt) {
+      selectDatePrompt.style.display = 'none';
+    }
     
     const dateString = formatDate(date);
     
     // Get bookings for this date from API
     let bookedSlots = {};
     try {
-      const bookingsData = await API.Booking.getBookingsByDate(dateString);
-      if (bookingsData.success && bookingsData.data) {
-        bookedSlots = bookingsData.data;
+      if (typeof API !== 'undefined' && API.Booking) {
+        const bookingsData = await API.Booking.getBookingsByDate(dateString);
+        if (bookingsData && bookingsData.success && bookingsData.data) {
+          bookedSlots = bookingsData.data;
+        }
       }
     } catch (error) {
-      console.error('Error fetching bookings:', error);
-      showMessage('Error loading available times. Please try again.', 'error');
+      console.warn('Could not fetch bookings, showing all slots as available:', error);
+      // Continue without API - show all slots as available
     }
     
     // Check if this day is a day off
@@ -384,17 +427,16 @@ document.addEventListener('DOMContentLoaded', function() {
     updateStepIndicator(1);
     
     // Regenerate calendar to reflect new bookings
-    generateCalendar(currentMonth, currentYear);
+    await generateCalendar(currentMonth, currentYear);
   }
   
   // Navigation functions
-  function goToPrevMonth() {
+  async function goToPrevMonth() {
     currentMonth--;
     if (currentMonth < 0) {
       currentMonth = 11;
       currentYear--;
     }
-    generateCalendar(currentMonth, currentYear);
     
     // Reset time slots when changing month
     availableSlots.innerHTML = '';
@@ -402,15 +444,17 @@ document.addEventListener('DOMContentLoaded', function() {
     selectedDate = null;
     selectedTimeSlot = null;
     updateSelectedDatetime();
+    
+    // Regenerate calendar
+    await generateCalendar(currentMonth, currentYear);
   }
   
-  function goToNextMonth() {
+  async function goToNextMonth() {
     currentMonth++;
     if (currentMonth > 11) {
       currentMonth = 0;
       currentYear++;
     }
-    generateCalendar(currentMonth, currentYear);
     
     // Reset time slots when changing month
     availableSlots.innerHTML = '';
@@ -418,6 +462,9 @@ document.addEventListener('DOMContentLoaded', function() {
     selectedDate = null;
     selectedTimeSlot = null;
     updateSelectedDatetime();
+    
+    // Regenerate calendar
+    await generateCalendar(currentMonth, currentYear);
   }
   
   // Utility functions

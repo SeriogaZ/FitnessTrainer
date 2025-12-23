@@ -8,14 +8,12 @@ A simple and easy-to-use fitness booking application for clients to book trainin
 - **Real-time Availability**: See available time slots instantly
 - **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
 - **Backend Integration**: Secure API-based booking system with MongoDB
-- **Admin Panel**: Manage bookings and settings (accessible via admin.html)
 
 ## Project Structure
 
 ```
 FitnessTrainer/
 ├── index.html              # Main homepage with booking interface
-├── admin.html              # Admin panel for managing bookings
 ├── css/                    # Stylesheets
 │   ├── style.css          # Main styles
 │   ├── responsive.css     # Responsive styles
@@ -88,28 +86,13 @@ For production deployment:
 6. Add any special notes (optional)
 7. Click "Confirm Booking"
 
-### For Admins
-
-1. Access the admin panel at `/admin.html`
-2. Login with your credentials
-3. View all bookings
-4. Manage time slots and settings
-5. Block/unblock specific dates or times
-
 ## API Endpoints
 
 ### Booking Endpoints
 
 - `GET /api/bookings/date/:date` - Get bookings for a specific date
 - `POST /api/bookings` - Create a new booking
-
-### Admin Endpoints (Protected)
-
-- `GET /api/bookings` - Get all bookings
-- `DELETE /api/bookings/:id` - Delete a booking
-- `POST /api/admin/login` - Admin login
-- `GET /api/settings` - Get booking settings
-- `PUT /api/settings` - Update booking settings
+- `GET /api/settings` - Get booking settings (working hours, etc.)
 
 ## Technology Stack
 
