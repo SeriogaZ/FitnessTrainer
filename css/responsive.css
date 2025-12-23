@@ -3,8 +3,6 @@
 @media (max-width: 1120px) {}
 
 @media (max-width: 992px) {
-
-
     .hero_area {
         height: auto;
     }
@@ -28,11 +26,66 @@
     .custom_nav2 .navbar-nav {
         margin-top: 10px;
     }
+
+    /* Header Responsive */
+    .header_section {
+        padding: 10px 0;
+    }
+
+    .navbar-brand span {
+        font-size: 18px;
+    }
+
+    /* Quick Info Banner */
+    .quick-info-banner .row {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .quick-info-banner .col-md-4 {
+        margin-top: 15px;
+        text-align: center;
+    }
+
+    .quick-info-banner .col-md-4.text-right {
+        text-align: center !important;
+    }
+
+    /* Booking Steps */
+    .booking-steps {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .step:not(:last-child)::after {
+        display: none;
+    }
+
+    /* Booking Container */
+    .booking_container {
+        padding: 25px;
+    }
+
+    /* Booking Layout - Stack on tablet */
+    .booking_container .row {
+        flex-direction: column;
+    }
+
+    .booking_container .col-lg-7,
+    .booking_container .col-lg-5 {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Trainer Stats */
+    .trainer-stats {
+        flex-direction: row;
+        justify-content: space-around;
+        gap: 15px;
+    }
 }
 
 @media (max-width: 768px) {
-
-
     .slider_section .detail-box {
         text-align: center;
     }
@@ -46,11 +99,9 @@
     }
 
     .slider_section .carousel-indicators {
-
         justify-content: center;
         left: 0;
         bottom: 55px;
-
     }
 
     .service_section .service_container .box {
@@ -100,11 +151,254 @@
     .info_section .info_social {
         justify-content: center;
     }
+
+    /* Quick Info Banner Mobile */
+    .quick-info-banner {
+        padding: 15px 0;
+    }
+
+    .quick-info-banner h3 {
+        font-size: 1.2rem;
+    }
+
+    .quick-info-banner p {
+        font-size: 0.85rem;
+    }
+
+    .btn-info-link {
+        font-size: 0.9rem;
+    }
+
+    /* Booking Section Mobile */
+    .booking_section {
+        padding: 40px 0;
+    }
+
+    .booking_container {
+        padding: 20px 15px;
+    }
+
+    .booking-steps {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+    }
+
+    .step-number {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+
+    .step-label {
+        font-size: 0.8rem;
+    }
+
+    /* Calendar Mobile */
+    .calendar_header {
+        margin-bottom: 10px;
+    }
+
+    #month-year {
+        font-size: 1.1rem;
+    }
+
+    .month-nav {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+
+    .weekdays div {
+        font-size: 0.75rem;
+        padding: 8px 0;
+    }
+
+    .day {
+        height: 35px;
+        font-size: 0.9rem;
+    }
+
+    /* Time Slots Mobile */
+    .time-slots h4 {
+        font-size: 1.1rem;
+    }
+
+    .slots-container {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 8px;
+    }
+
+    .time-slot {
+        padding: 10px 5px;
+        font-size: 0.85rem;
+    }
+
+    /* Booking Layout Mobile - Stack vertically */
+    .booking_container .row {
+        flex-direction: column;
+    }
+
+    .booking_container .col-lg-7 {
+        order: 1;
+        margin-bottom: 30px;
+    }
+
+    .booking_container .col-lg-5 {
+        order: 2;
+    }
+
+    /* Booking Form Mobile */
+    .booking-form {
+        padding: 15px;
+        margin-top: 0;
+    }
+
+    .booking-form h4 {
+        font-size: 1.2rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+
+    .btn-book {
+        padding: 15px 20px;
+        font-size: 16px;
+    }
+
+    /* About Section Mobile */
+    .about_section .box {
+        flex-direction: column;
+    }
+
+    .about_section .img-box {
+        margin-bottom: 20px;
+    }
+
+    /* Trainer Stats Mobile */
+    .trainer-stats {
+        flex-direction: row;
+        justify-content: space-around;
+        gap: 15px;
+    }
+
+    .stat-item strong {
+        font-size: 1.5rem;
+    }
+
+    .stat-item span {
+        font-size: 0.8rem;
+    }
+
+    /* Contact Section Mobile */
+    .contact-info {
+        margin-bottom: 20px;
+    }
+
+    .map_container {
+        margin-top: 20px;
+    }
 }
 
 @media (max-width: 576px) {
     .slider_section .detail-box h1 {
         font-size: 3rem;
+    }
+
+    /* Quick Info Banner Small Mobile */
+    .quick-info-banner h3 {
+        font-size: 1.1rem;
+    }
+
+    .quick-info-banner p {
+        font-size: 0.8rem;
+    }
+
+    /* Booking Steps Small Mobile */
+    .booking-steps {
+        gap: 10px;
+    }
+
+    .step-number {
+        width: 30px;
+        height: 30px;
+        font-size: 0.85rem;
+    }
+
+    .step-label {
+        font-size: 0.75rem;
+    }
+
+    /* Calendar Small Mobile */
+    #month-year {
+        font-size: 1rem;
+    }
+
+    .month-nav {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+
+    .weekdays div {
+        font-size: 0.7rem;
+        padding: 6px 0;
+    }
+
+    .day {
+        height: 30px;
+        font-size: 0.85rem;
+    }
+
+    /* Time Slots Small Mobile */
+    .slots-container {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 6px;
+    }
+
+    .time-slot {
+        padding: 8px 3px;
+        font-size: 0.8rem;
+    }
+
+    /* Form Small Mobile */
+    .booking-form {
+        padding: 12px;
+    }
+
+    .booking-form h4 {
+        font-size: 1.1rem;
+    }
+
+    .form-group label {
+        font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .btn-book {
+        padding: 12px 15px;
+        font-size: 15px;
+    }
+
+    /* Trainer Stats Small Mobile */
+    .trainer-stats {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .stat-item strong {
+        font-size: 1.3rem;
+    }
+
+    .stat-item span {
+        font-size: 0.75rem;
     }
 }
 
@@ -129,7 +423,51 @@
         margin-bottom: 10px;
     }
 
+    /* Extra Small Mobile */
+    .quick-info-banner h3 {
+        font-size: 1rem;
+    }
 
+    .quick-info-banner p {
+        font-size: 0.75rem;
+    }
+
+    .booking_container {
+        padding: 15px 10px;
+    }
+
+    .step-number {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+
+    .step-label {
+        font-size: 0.7rem;
+    }
+
+    #month-year {
+        font-size: 0.95rem;
+    }
+
+    .day {
+        height: 28px;
+        font-size: 0.8rem;
+    }
+
+    .time-slot {
+        padding: 6px 2px;
+        font-size: 0.75rem;
+    }
+
+    .booking-form h4 {
+        font-size: 1rem;
+    }
+
+    .btn-book {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
 }
 
 @media (max-width: 360px) {}

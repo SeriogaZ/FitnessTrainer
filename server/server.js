@@ -33,10 +33,11 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/settings', settingsRoutes);
 
-// Serve static files in production
+// Serve static files (both development and production)
+app.use(express.static(path.join(__dirname, '../')));
+
+// Serve index.html for all non-API routes in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../')));
-  
   app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../', 'index.html'));
   });

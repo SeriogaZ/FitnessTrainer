@@ -4,7 +4,10 @@
  */
 
 // Base URL for API requests
-const API_BASE_URL = '/api';
+// Automatically detect if we need to use full URL (when opening HTML directly)
+const API_BASE_URL = (window.location.protocol === 'file:' || window.location.port === '')
+  ? 'http://localhost:5000/api'
+  : '/api';
 
 /**
  * Fetch API wrapper with error handling

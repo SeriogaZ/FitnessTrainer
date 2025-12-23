@@ -1,3 +1,15 @@
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 body {
   font-family: "Poppins", sans-serif;
   color: #040000;
@@ -252,6 +264,29 @@ a:focus {
   color: #ffffff;
 }
 
+/* Hero section styles for booking app */
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: #666;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.slider_section .img-box img {
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  max-width: 100%;
+  height: auto;
+}
+
 .slider_section .detail-box .btn-box {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -270,28 +305,37 @@ a:focus {
 
 .slider_section .detail-box .btn-box .btn-1 {
   display: inline-block;
-  padding: 7px 0;
-  background-color: #f8bc1a;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #f8bc1a 0%, #e0a800 100%);
   border: 1px solid #f8bc1a;
   color: #ffffff;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(248, 188, 26, 0.3);
 }
 
 .slider_section .detail-box .btn-box .btn-1:hover {
-  background-color: transparent;
-  color: #f8bc1a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(248, 188, 26, 0.4);
+  color: #ffffff;
 }
 
 .slider_section .detail-box .btn-box .btn-2 {
   display: inline-block;
-  padding: 7px 0;
-  background-color: #f4f3f3;
-  border: 1px solid #f4f3f3;
-  color: #020000;
+  padding: 12px 30px;
+  background-color: #333;
+  border: 1px solid #333;
+  color: #ffffff;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
 .slider_section .detail-box .btn-box .btn-2:hover {
-  background-color: transparent;
-  color: #f4f3f3;
+  background-color: #555;
+  color: #ffffff;
+  transform: translateY(-2px);
 }
 
 .slider_section .carousel-indicators {
@@ -673,6 +717,87 @@ a:focus {
 /* contact section */
 .contact_section {
   position: relative;
+}
+
+.contact-info {
+  padding: 20px;
+}
+
+.contact-info h4 {
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.contact-info p {
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.contact-info a {
+  color: #f8bc1a;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.contact-info a:hover {
+  color: #e0a800;
+  text-decoration: underline;
+}
+
+/* Trainer Stats */
+.trainer-stats {
+  display: flex;
+  gap: 30px;
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 2px solid #f0f0f0;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  text-align: center;
+  flex: 1;
+  min-width: 100px;
+}
+
+.stat-item strong {
+  display: block;
+  font-size: 2rem;
+  color: #f8bc1a;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.stat-item span {
+  display: block;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Quick Booking CTA */
+.quick-booking-cta {
+  margin-top: 20px;
+}
+
+.btn-quick-book {
+  display: inline-block;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #f8bc1a 0%, #e0a800 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(248, 188, 26, 0.3);
+}
+
+.btn-quick-book:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(248, 188, 26, 0.4);
+  color: white;
+  text-decoration: none;
 }
 
 .contact_section .bg-img {
