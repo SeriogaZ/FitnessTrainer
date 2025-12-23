@@ -269,12 +269,26 @@
     }
 
     /* About Section Mobile */
-    .about_section .box {
+    .about-section .row {
         flex-direction: column;
     }
 
-    .about_section .img-box {
-        margin-bottom: 20px;
+    .about-img-box {
+        margin-bottom: 25px;
+    }
+
+    .about-image {
+        max-width: 220px;
+    }
+
+    .about-content h3 {
+        font-size: 1.6rem;
+        text-align: center;
+    }
+
+    .about-intro {
+        text-align: center;
+        font-size: 1rem;
     }
 
     /* Trainer Stats Mobile */
