@@ -1,50 +1,82 @@
-const mongoose = require('mongoose');
+const supabase = require('../db/supabase');
 
-const BookingSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Name is required'],
-    trim: true
+const Booking = {
+  /**
+   * Find all bookings
+   */
+  findAll: async () => {
+    const { data, error } = await supabase
+      .from('bookings')
+      .select('*')
+      .order('date', { ascending: true })
+      .order('time', { ascending: true });
+    
+    if (error) throw error;
+    return data;
   },
-  email: {
-    type: String,
-    required: [true, 'Email is required'],
-    trim: true,
-    lowercase: true,
-    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email']
+
+  /**
+   * Find bookings for a specific date
+   */
+  findByDate: async (date) => {
+    const { data, error } = await supabase
+      .from('bookings')
+      .select('time, is_blocked')
+      .eq('date', date);
+    
+    if (error) throw error;
+    return data;
   },
-  phone: {
-    type: String,
-    required: [true, 'Phone number is required'],
-    trim: true
+
+  /**
+   * Find one booking by date and time
+   */
+  findOne: async (date, time) => {
+    const { data, error } = await supabase
+      .from('bookings')
+      .select('*')
+      .eq('date', date)
+      .eq('time', time)
+      .single();
+    
+    if (error && error.code !== 'PGRST116') throw error; // PGRST116 = not found
+    return data;
   },
-  date: {
-    type: String,
-    required: [true, 'Date is required'],
-    // Format: YYYY-MM-DD
-    match: [/^\d{4}-\d{2}-\d{2}$/, 'Please provide a valid date in YYYY-MM-DD format']
+
+  /**
+   * Create a new booking
+   */
+  create: async (bookingData) => {
+    const { data, error } = await supabase
+      .from('bookings')
+      .insert({
+        name: bookingData.name,
+        email: bookingData.email,
+        phone: bookingData.phone,
+        date: bookingData.date,
+        time: bookingData.time,
+        notes: bookingData.notes || null,
+        is_blocked: bookingData.isBlocked || false
+      })
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data;
   },
-  time: {
-    type: String,
-    required: [true, 'Time is required'],
-    // Format: HH:MM (24-hour)
-    match: [/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Please provide a valid time in HH:MM format']
-  },
-  notes: {
-    type: String,
-    trim: true
-  },
-  isBlocked: {
-    type: Boolean,
-    default: false
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
+
+  /**
+   * Delete a booking by ID
+   */
+  deleteById: async (id) => {
+    const { error } = await supabase
+      .from('bookings')
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
+    return true;
   }
-});
+};
 
-// Create a compound index on date and time to ensure uniqueness
-BookingSchema.index({ date: 1, time: 1 }, { unique: true });
-
-module.exports = mongoose.model('Booking', BookingSchema);
+module.exports = Booking;

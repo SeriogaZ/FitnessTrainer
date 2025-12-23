@@ -3,13 +3,14 @@ const router = express.Router();
 const Booking = require('../models/Booking');
 const Settings = require('../models/Settings');
 const { protect } = require('../middleware/authMiddleware');
+const { sendBookingNotification } = require('../utils/emailService');
 
 // @desc    Get all bookings
 // @route   GET /api/bookings
 // @access  Private (Admin only)
 router.get('/', protect, async (req, res) => {
   try {
-    const bookings = await Booking.find().sort({ date: 1, time: 1 });
+    const bookings = await Booking.findAll();
     
     res.status(200).json({
       success: true,
@@ -17,6 +18,7 @@ router.get('/', protect, async (req, res) => {
       data: bookings
     });
   } catch (err) {
+    console.error('Error fetching bookings:', err);
     res.status(500).json({
       success: false,
       message: 'Server error'
@@ -39,14 +41,14 @@ router.get('/date/:date', async (req, res) => {
       });
     }
     
-    const bookings = await Booking.find({ date }).select('time isBlocked');
+    const bookings = await Booking.findByDate(date);
     
     // Format response as an object with time slots as keys
     const bookingsMap = {};
     bookings.forEach(booking => {
       bookingsMap[booking.time] = {
         isBooked: true,
-        isBlocked: booking.isBlocked
+        isBlocked: booking.is_blocked
       };
     });
     
@@ -79,7 +81,7 @@ router.post('/', async (req, res) => {
     }
     
     // Check if the slot is already booked
-    const existingBooking = await Booking.findOne({ date, time });
+    const existingBooking = await Booking.findOne(date, time);
     if (existingBooking) {
       return res.status(400).json({
         success: false,
@@ -88,32 +90,41 @@ router.post('/', async (req, res) => {
     }
     
     // Get settings to validate booking
-    const settings = await Settings.getSettings();
+    let settings;
+    try {
+      settings = await Settings.getSettings();
+    } catch (settingsError) {
+      console.error('Error getting settings:', settingsError);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to load booking settings. Please try again later.'
+      });
+    }
     
     // Check if booking is within allowed advance time
     const bookingDate = new Date(date + 'T' + time);
     const now = new Date();
     const hoursDifference = (bookingDate - now) / (1000 * 60 * 60);
     
-    if (hoursDifference < settings.minAdvanceHours) {
+    if (hoursDifference < settings.min_advance_hours) {
       return res.status(400).json({
         success: false,
-        message: `Bookings must be made at least ${settings.minAdvanceHours} hours in advance`
+        message: `Bookings must be made at least ${settings.min_advance_hours} hours in advance`
       });
     }
     
     // Check if booking is not too far in the future
     const daysDifference = hoursDifference / 24;
-    if (daysDifference > settings.advanceBookingDays) {
+    if (daysDifference > settings.advance_booking_days) {
       return res.status(400).json({
         success: false,
-        message: `Bookings can only be made up to ${settings.advanceBookingDays} days in advance`
+        message: `Bookings can only be made up to ${settings.advance_booking_days} days in advance`
       });
     }
     
     // Check if the day is a day off
     const dayOfWeek = new Date(date).getDay().toString();
-    if (settings.daysOff.includes(dayOfWeek)) {
+    if (settings.days_off.includes(dayOfWeek)) {
       return res.status(400).json({
         success: false,
         message: 'This day is not available for bookings'
@@ -122,7 +133,7 @@ router.post('/', async (req, res) => {
     
     // Check if the time is within working hours
     const bookingHour = parseInt(time.split(':')[0]);
-    if (bookingHour < settings.startHour || bookingHour >= settings.endHour) {
+    if (bookingHour < settings.start_hour || bookingHour >= settings.end_hour) {
       return res.status(400).json({
         success: false,
         message: 'This time is outside of working hours'
@@ -139,11 +150,27 @@ router.post('/', async (req, res) => {
       notes
     });
     
+    // Send email notification to trainer (don't wait for it)
+    sendBookingNotification({
+      name,
+      email,
+      phone,
+      date,
+      time,
+      notes
+    }).catch(err => {
+      console.error('Failed to send booking notification email:', err);
+      // Don't fail the booking if email fails
+    });
+    
     res.status(201).json({
       success: true,
       data: booking
     });
   } catch (err) {
+    // Log the full error for debugging
+    console.error('Booking creation error:', err);
+    
     // Check for validation errors
     if (err.name === 'ValidationError') {
       const messages = Object.values(err.errors).map(val => val.message);
@@ -153,17 +180,27 @@ router.post('/', async (req, res) => {
       });
     }
     
-    // Check for duplicate key error
-    if (err.code === 11000) {
+    // Check for duplicate key error (PostgreSQL unique constraint violation)
+    if (err.code === '23505') {
       return res.status(400).json({
         success: false,
         message: 'This time slot is already booked'
       });
     }
     
+    // Check for database connection errors
+    if (err.message && err.message.includes('fetch')) {
+      return res.status(500).json({
+        success: false,
+        message: 'Database connection error. Please check your Supabase configuration.'
+      });
+    }
+    
+    // Return more specific error message
     res.status(500).json({
       success: false,
-      message: 'Server error'
+      message: err.message || 'Server error',
+      error: process.env.NODE_ENV === 'development' ? err.stack : undefined
     });
   }
 });
@@ -173,22 +210,20 @@ router.post('/', async (req, res) => {
 // @access  Private (Admin only)
 router.delete('/:id', protect, async (req, res) => {
   try {
-    const booking = await Booking.findById(req.params.id);
-    
-    if (!booking) {
-      return res.status(404).json({
-        success: false,
-        message: 'Booking not found'
-      });
-    }
-    
-    await booking.remove();
+    await Booking.deleteById(req.params.id);
     
     res.status(200).json({
       success: true,
       data: {}
     });
   } catch (err) {
+    console.error('Error deleting booking:', err);
+    if (err.code === 'PGRST116') {
+      return res.status(404).json({
+        success: false,
+        message: 'Booking not found'
+      });
+    }
     res.status(500).json({
       success: false,
       message: 'Server error'

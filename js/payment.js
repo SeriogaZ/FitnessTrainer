@@ -12,9 +12,10 @@ let currentBooking = null;
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize Stripe (replace with your publishable key)
   // Get from environment or use test key
-  const stripeKey = window.STRIPE_PUBLISHABLE_KEY || 'pk_test_51ShXbXI83wpzjW6mMpQWj4SrEfKo85NLwg8woPzVTR7t0s91oCalJEsYf6iZSSgCahPn2VFs6uyUQs0gKgcTvYxU00oWM0SYYz'; // You'll need to add your Stripe publishable key
+  // For localhost testing, you can use Stripe's test mode keys
+  const stripeKey = window.STRIPE_PUBLISHABLE_KEY || 'pk_test_51ShXbXI83wpzjW6mMpQWj4SrEfKo85NLwg8woPzVTR7t0s91oCalJEsYf6iZSSgCahPn2VFs6uyUQs0gKgcTvYxU00oWM0SYYz'; // Test key for localhost testing
   
-  if (typeof Stripe !== 'undefined' && stripeKey && stripeKey !== 'pk_test_51ShXbXI83wpzjW6mMpQWj4SrEfKo85NLwg8woPzVTR7t0s91oCalJEsYf6iZSSgCahPn2VFs6uyUQs0gKgcTvYxU00oWM0SYYz') {
+  if (typeof Stripe !== 'undefined' && stripeKey) {
     stripe = Stripe(stripeKey);
     elements = stripe.elements();
     
@@ -285,14 +286,23 @@ async function completeBooking(paymentMethod, paymentId) {
   try {
     // Submit booking to API
     if (typeof API !== 'undefined' && API.Booking) {
+      console.log('Submitting booking with data:', bookingData);
       const result = await API.Booking.createBooking(bookingData);
+      console.log('Booking API response:', result);
       if (result.success) {
         showPaymentMessage('✅ Payment successful! Your booking is confirmed.', 'success');
         setTimeout(() => {
           showSuccessPage(bookingData);
         }, 2000);
       } else {
-        showPaymentMessage('Booking failed. Payment was processed. Please contact us.', 'error');
+        const errorMsg = result.message || 'Booking failed. Payment was processed. Please contact us.';
+        showPaymentMessage(`❌ ${errorMsg}`, 'error');
+        // Re-enable payment button
+        const cardSubmitBtn = document.getElementById('card-submit');
+        if (cardSubmitBtn) {
+          cardSubmitBtn.disabled = false;
+          cardSubmitBtn.textContent = 'Pay €50.00';
+        }
       }
     } else {
       // Fallback
@@ -304,7 +314,15 @@ async function completeBooking(paymentMethod, paymentId) {
     }
   } catch (error) {
     console.error('Error completing booking:', error);
-    showPaymentMessage('Payment successful but booking failed. Please contact us.', 'error');
+    // Extract the actual error message from the API
+    const errorMsg = error.message || 'Payment successful but booking failed. Please contact us.';
+    showPaymentMessage(`❌ ${errorMsg}`, 'error');
+    // Re-enable payment button
+    const cardSubmitBtn = document.getElementById('card-submit');
+    if (cardSubmitBtn) {
+      cardSubmitBtn.disabled = false;
+      cardSubmitBtn.textContent = 'Pay €50.00';
+    }
   }
 }
 
@@ -351,11 +369,25 @@ function showSuccessPage(booking) {
 
 function showPaymentMessage(text, type) {
   const messageEl = document.getElementById('payment-message');
-  if (!messageEl) return;
+  if (!messageEl) {
+    console.warn('Payment message element not found');
+    return;
+  }
 
   messageEl.textContent = text;
   messageEl.className = `mt-3 ${type === 'success' ? 'text-success' : 'text-danger'}`;
   messageEl.style.display = 'block';
+  messageEl.style.fontSize = '16px';
+  messageEl.style.fontWeight = type === 'error' ? '600' : '500';
+  messageEl.style.padding = '12px 16px';
+  messageEl.style.borderRadius = '8px';
+  messageEl.style.backgroundColor = type === 'error' ? '#fff5f5' : '#f0fff4';
+  messageEl.style.border = type === 'error' ? '1px solid #fc8181' : '1px solid #9ae6b4';
+  
+  // Scroll to message
+  setTimeout(() => {
+    messageEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 100);
 }
 
 function formatTime(time) {

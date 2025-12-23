@@ -1,8 +1,8 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+const supabase = require('./db/supabase');
 
 // Import routes
 const bookingRoutes = require('./routes/bookingRoutes');
@@ -20,13 +20,22 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('MongoDB connection error:', err));
+// Test Supabase connection
+async function testConnection() {
+  try {
+    const { data, error } = await supabase.from('settings').select('id').limit(1);
+    if (error && error.code !== 'PGRST116') {
+      throw error;
+    }
+    console.log('✅ Connected to Supabase');
+  } catch (err) {
+    console.error('❌ Supabase connection error:', err.message);
+    console.error('\n⚠️  Please check your SUPABASE_URL and SUPABASE_ANON_KEY in .env file');
+    console.error('See SUPABASE_SETUP.md for setup instructions');
+  }
+}
+
+testConnection();
 
 // API routes
 app.use('/api/bookings', bookingRoutes);
