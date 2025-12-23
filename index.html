@@ -19,6 +19,7 @@
   <link href="css/style.css" rel="stylesheet" />
   <link href="css/responsive.css" rel="stylesheet" />
   <link href="css/booking.css" rel="stylesheet" />
+  <link href="css/payment.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -86,6 +87,10 @@
           </div>
           <div class="step">
             <span class="step-number">3</span>
+            <span class="step-label">Payment</span>
+          </div>
+          <div class="step">
+            <span class="step-number">4</span>
             <span class="step-label">Confirm</span>
           </div>
         </div>
@@ -143,11 +148,123 @@
                   <textarea id="notes" placeholder="Any injuries, goals, or preferences..."></textarea>
                 </div>
                 <button type="submit" class="btn-book">
-                  <span class="btn-text">Confirm Booking</span>
-                  <span class="btn-icon">✓</span>
+                  <span class="btn-text">Continue to Payment</span>
+                  <span class="btn-icon">→</span>
                 </button>
               </form>
               <div id="booking-message" class="mt-3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Payment Section (Hidden by default) -->
+  <section id="payment-section" class="payment_section layout_padding" style="display: none;">
+    <div class="container">
+      <div class="heading_container">
+        <h2>Complete Your Booking</h2>
+        <p class="subtitle">Secure payment - Your information is protected</p>
+      </div>
+      <div class="text-center mb-4">
+        <button class="btn-back-to-calendar" onclick="goBackToCalendar()">
+          ← Back to Calendar
+        </button>
+      </div>
+      
+      <div class="payment_container">
+        <div class="row">
+          <div class="col-lg-7">
+            <div class="booking-summary">
+              <h4>Booking Summary</h4>
+              <div class="summary-item">
+                <strong>Date:</strong>
+                <span id="summary-date"></span>
+              </div>
+              <div class="summary-item">
+                <strong>Time:</strong>
+                <span id="summary-time"></span>
+              </div>
+              <div class="summary-item">
+                <strong>Name:</strong>
+                <span id="summary-name"></span>
+              </div>
+              <div class="summary-item">
+                <strong>Email:</strong>
+                <span id="summary-email"></span>
+              </div>
+              <div class="summary-total">
+                <strong>Total:</strong>
+                <span id="summary-total">€50.00</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-lg-5">
+            <div class="payment-options">
+              <h4>Choose Payment Method</h4>
+              
+              <!-- Apple Pay -->
+              <div class="payment-method" id="apple-pay-btn" style="display: none;">
+                <button class="btn-payment apple-pay">
+                  <span class="payment-icon">🍎</span>
+                  <span>Pay with Apple Pay</span>
+                </button>
+              </div>
+              
+              <!-- Google Pay / Samsung Pay -->
+              <div class="payment-method" id="google-pay-btn" style="display: none;">
+                <button class="btn-payment google-pay">
+                  <span class="payment-icon">G</span>
+                  <span>Pay with Google Pay</span>
+                </button>
+              </div>
+              
+              <!-- PayPal -->
+              <div class="payment-method">
+                <button class="btn-payment paypal" id="paypal-button">
+                  <span class="payment-icon">P</span>
+                  <span>Pay with PayPal</span>
+                </button>
+              </div>
+              
+              <!-- Credit Card -->
+              <div class="payment-method">
+                <div class="card-payment">
+                  <h5>Or pay with card</h5>
+                  <form id="card-form">
+                    <div class="form-group">
+                      <label>Card Number</label>
+                      <div id="card-number" class="stripe-element"></div>
+                    </div>
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label>Expiry</label>
+                          <div id="card-expiry" class="stripe-element"></div>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label>CVC</label>
+                          <div id="card-cvc" class="stripe-element"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Cardholder Name</label>
+                      <input type="text" id="cardholder-name" placeholder="John Doe" required />
+                    </div>
+                    <button type="submit" class="btn-book" id="card-submit">
+                      <span class="btn-text">Pay €50.00</span>
+                      <span class="btn-icon">💳</span>
+                    </button>
+                  </form>
+                </div>
+              </div>
+              
+              <div id="payment-message" class="mt-3"></div>
             </div>
           </div>
         </div>
@@ -289,7 +406,12 @@
   <!-- Scripts -->
   <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="js/bootstrap.js"></script>
+  <!-- Stripe for Credit Cards, Apple Pay, Google Pay -->
+  <script src="https://js.stripe.com/v3/"></script>
+  <!-- PayPal SDK - Replace YOUR_PAYPAL_CLIENT_ID with your actual PayPal Client ID -->
+  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=EUR&intent=capture"></script>
   <script type="text/javascript" src="js/api.js"></script>
   <script type="text/javascript" src="js/booking.js"></script>
+  <script type="text/javascript" src="js/payment.js"></script>
 </body>
 </html>

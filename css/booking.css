@@ -211,12 +211,29 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
   border-radius: 5px;
-  transition: all 0.3s;
+  transition: all 0.2s ease;
   font-weight: 500;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+  user-select: none;
+}
+
+.day.selectable {
+  cursor: pointer;
+  background-color: #ffffff;
+  border: 2px solid transparent;
+}
+
+.day.selectable:hover {
+  background-color: #f8bc1a;
+  color: white;
+  transform: scale(1.05);
+}
+
+.day.selectable.selected {
+  background-color: #f8bc1a;
+  color: white;
+  border-color: #e0a800;
+  box-shadow: 0 2px 8px rgba(248, 188, 26, 0.3);
 }
 
 .day:hover:not(.empty):not(.disabled) {
@@ -235,6 +252,8 @@
 .day.disabled {
   color: #ccc;
   cursor: not-allowed;
+  background-color: #f5f5f5;
+  opacity: 0.5;
 }
 
 .day.booked {
@@ -284,18 +303,17 @@
 .time-slot {
   padding: 12px;
   text-align: center;
-  background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+  background-color: #f0f0f0;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   border: 2px solid transparent;
   font-weight: 500;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
   min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
+  user-select: none;
 }
 
 .time-slot:hover:not(.booked) {
